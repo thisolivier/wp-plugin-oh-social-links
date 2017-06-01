@@ -9,23 +9,23 @@
    Text Domain: oh-social-tdomain
    License: GPL2
    */
-?>
 
-<?php
-/** Step 2 (from text above). */
-add_action( 'admin_menu', 'my_plugin_menu' );
+class ohSocialLinks {
+  public function __construct() {
+    add_action( 'admin_menu', array($this, 'admin_menu') );
+    add_shortcode( 'public_shortcode', array($this, 'shortcode') );
+    add_filter('widget_text', 'do_shortcode');
+  }
 
-/** Step 1. */
-function my_plugin_menu() {
-	add_options_page( 'Oh Social Links Plugin', 'Oh Social Links', 'manage_options', 'oh-social-uid', 'oh_social_options' );
-}
+  public function admin_menu() {
+  	add_options_page( 'Oh Social Links Plugin', 'Oh Social Links', 'manage_options', 'oh-social-uid', array($this, 'options') );
+  }
 
-/** Step 3. */
-function oh_social_options() {
-	if ( !current_user_can( 'manage_options' ) )  {
-		wp_die( __( 'You do not have sufficient permissions to access this page.' ) );
-	}
-  // variables for the field and option names
+  public function options() {
+    if ( !current_user_can( 'manage_options' ) )  {
+      wp_die( __( 'You do not have sufficient permissions to access this page.' ) );
+    }
+    // variables for the field and option names
     $opt_name = 'mt_favorite_color';
     $hidden_field_name = 'mt_submit_hidden';
     $data_field_name = 'mt_favorite_color';
@@ -46,29 +46,17 @@ function oh_social_options() {
         ?>
         <div class="updated"><p><strong><?php _e('settings saved.', 'oh-social-tdomain' ); ?></strong></p></div>
         <?php
-    }
+      }
 
-    // Now display the settings editing screen
-    echo '<div class="wrap">';
+      // Now display the settings editing screen
+      echo '<div class="wrap">';
+      echo "<h2>" . __( 'Plugin Settings - Oh Social Links', 'oh-social-tdomain' ) . "</h2>";
+      echo '</div>';
+  }
+   public function shortcode() {
 
-    // header
-    echo "<h2>" . __( 'Plugin Settings - Oh Social Links', 'oh-social-tdomain' ) . "</h2>";
-
-    // settings form
-    ?>
-    <form name="form1" method="post" action="">
-    <input type="hidden" name="<?php echo $hidden_field_name; ?>" value="Y">
-
-    <p><?php _e("Favorite Color:", 'oh-social-tdomain' ); ?>
-    <input type="text" name="<?php echo $data_field_name; ?>" value="<?php echo $opt_val; ?>" size="20">
-    </p><hr />
-
-    <p class="submit">
-    <input type="submit" name="Submit" class="button-primary" value="<?php esc_attr_e('Save Changes') ?>" />
-    </p>
-
-    </form>
-    </div>
-    <?php
+   }
 }
+
+$ohPlugin = new ohSocialLinks();
 ?>
